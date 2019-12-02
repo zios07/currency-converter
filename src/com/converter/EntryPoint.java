@@ -3,13 +3,14 @@ package com.converter;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.DecimalFormat;
 
 public class EntryPoint {
 
 	private static final String USD = "0";
 
 	public static void main(String[] args) throws IOException {
-		Converter converter = new EntryPoint().new Converter();
+		CurrencyManager converter = new EntryPoint().new CurrencyManager();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 		Double result = 0d;
 		String targetCurrency = null;
@@ -54,14 +55,14 @@ public class EntryPoint {
 			break;
 		}
 
-		System.out.println("Insert the amount to convert : ");
+		System.out.println("Insert the amount to convert (" + converter.guessCurrency(sourceCurrency) + " => " + converter.guessCurrency(targetCurrency) + ") : ");
 		Double amount = Double.valueOf(reader.readLine());
 
 		result = converter.convert(sourceCurrency, targetCurrency, amount);
-		System.out.println("The result is : " + result);
+		System.out.println("Convertion success : " + amount + " " + converter.guessCurrency(sourceCurrency) + " = " + new DecimalFormat("#.##").format(result) + " " + converter.guessCurrency(targetCurrency));
 	}
 
-	class Converter {
+	class CurrencyManager {
 
 		public Double convert(String sourceCurrency, String targetCurrency, Double amount) {
 			Double scale = getScale(sourceCurrency, targetCurrency);
@@ -98,6 +99,26 @@ public class EntryPoint {
 
 			return scale;
 		}
+
+		public String guessCurrency(String choice) {
+			switch (choice) {
+			case "1":
+				return "CAD";
+			case "2":
+				return "PESO";
+			case "3":
+				return "EURO";
+			case "4":
+				return "YUAN (CHINA)";
+			case "5":
+				return "YEN (JAPAN)";
+			case "6":
+				return "EGP (EGYPT)";
+			default:
+				return "USD";
+			}
+		}
+
 	}
 
 }
