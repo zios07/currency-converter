@@ -7,7 +7,14 @@ import java.text.DecimalFormat;
 
 public class EntryPoint {
 
-	private static final String USD = "0";
+	private static final String USD = "USD";
+	private static final String CAD = "CAD";
+	private static final String PESO = "PESO";
+	private static final String EURO = "EURO";
+	private static final String YUAN = "YUAN";
+	private static final String YEN = "YEN";
+	private static final String EGP = "EGP";
+	private static final String[] currencies = { CAD, PESO, EURO, YUAN, YEN, EGP };
 
 	public static void main(String[] args) throws IOException {
 		CurrencyManager converter = new EntryPoint().new CurrencyManager();
@@ -40,6 +47,11 @@ public class EntryPoint {
 			System.out.println("6 - EGP (EGYPT)");
 			targetCurrency = reader.readLine();
 			sourceCurrency = USD;
+			if (!verifyInput(targetCurrency)) {
+				System.err.println("Invalid currency, please type the currency name");
+				main(args);
+				return;
+			}
 			break;
 		// Conversion to USD
 		case 2:
@@ -52,6 +64,11 @@ public class EntryPoint {
 			System.out.println("6 - EGP (EGYPT)");
 			targetCurrency = USD;
 			sourceCurrency = reader.readLine();
+			if (!verifyInput(sourceCurrency)) {
+				System.err.println("Invalid currency, please type the currency name");
+				main(args);
+				return;
+			}
 			break;
 		}
 
@@ -60,6 +77,16 @@ public class EntryPoint {
 
 		result = converter.convert(sourceCurrency, targetCurrency, amount);
 		System.out.println("Convertion success : " + amount + " " + converter.guessCurrency(sourceCurrency) + " = " + new DecimalFormat("#.##").format(result) + " " + converter.guessCurrency(targetCurrency));
+	}
+
+	private static boolean verifyInput(String choosenCurrency) {
+		boolean match = false;
+		for (String currency : currencies) {
+			if (currency.equals(choosenCurrency)) {
+				match = true;
+			}
+		}
+		return match;
 	}
 
 	class CurrencyManager {
@@ -71,29 +98,29 @@ public class EntryPoint {
 
 		private Double getScale(String sourceCurrency, String targetCurrency) {
 			Double scale = null;
-			String choice = targetCurrency.equals("0") ? sourceCurrency : targetCurrency;
+			String choice = targetCurrency.equals(USD) ? sourceCurrency : targetCurrency;
 			switch (choice) {
-			case "1":
+			case CAD:
 				scale = 1.33;
 				break;
-			case "2":
+			case PESO:
 				scale = 19.55;
 				break;
-			case "3":
+			case EURO:
 				scale = 0.91;
 				break;
-			case "4":
+			case YUAN:
 				scale = 7.03;
 				break;
-			case "5":
+			case YEN:
 				scale = 109.84;
 				break;
-			case "6":
+			case EGP:
 				scale = 16.12;
 				break;
 			}
 
-			if (targetCurrency.equals("0")) {
+			if (targetCurrency.equals(USD)) {
 				scale = 1 / scale;
 			}
 
@@ -102,17 +129,17 @@ public class EntryPoint {
 
 		public String guessCurrency(String choice) {
 			switch (choice) {
-			case "1":
+			case CAD:
 				return "CAD";
-			case "2":
+			case PESO:
 				return "PESO";
-			case "3":
+			case EURO:
 				return "EURO";
-			case "4":
+			case YUAN:
 				return "YUAN (CHINA)";
-			case "5":
+			case YEN:
 				return "YEN (JAPAN)";
-			case "6":
+			case EGP:
 				return "EGP (EGYPT)";
 			default:
 				return "USD";
